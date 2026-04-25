@@ -1,0 +1,190 @@
+/* === Bar foundation === */
+
+window.Bar {
+  background: transparent;
+  color: white;
+  font-family: "JetBrains Mono", "Font Awesome 7 Free", monospace;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* === Module pills (shared base for all right-side widgets + workspaces) === */
+
+.module,
+button.workspace {
+  background: rgba(20, 20, 30, 0.85);
+  color: white;
+  border: 1px solid #2393e9;
+  border-radius: 6px;
+  padding: 0 6px;
+  margin: 4px 3px;
+  min-height: 22px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: background 150ms ease;
+
+  &:hover {
+    background: rgba(35, 35, 50, 0.9);
+  }
+}
+
+.module > label,
+.module > box > label,
+button.workspace > label {
+  min-height: 18px;
+}
+
+/* The date pill is a menubutton; GTK4 inserts an inner <button> that has its
+   own default background. Force it transparent so the .module rule above paints. */
+menubutton.module > button {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  color: inherit;
+}
+
+/* === Workspaces === */
+
+button.workspace {
+  padding: 0 6px;
+  /* Min-width sized so both single- and double-digit numbers
+     end up at the same pill width (JetBrains Mono 13px monospace).
+     Double-digit content (~16px) + 12px padding + 2px border ≈ 30px,
+     so a 30px floor forces single-digit pills to match. */
+  min-width: 30px;
+
+  &.active {
+    background: #2393e9;
+    box-shadow: 0 2px 8px rgba(35, 147, 233, 0.45);
+  }
+}
+
+/* === Window title === */
+
+.window-title {
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 12px;
+}
+
+/* === Tray === */
+
+.tray menubutton,
+.tray menubutton > button,
+.tray button {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  min-height: 0;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.tray image {
+  -gtk-icon-size: 16px;
+  margin: 0;
+  color: white;
+}
+
+/* === Popovers (tray dbusmenu, etc.) === */
+
+popover,
+popover > contents,
+popover.menu,
+popover.menu > contents {
+  background-color: rgba(28, 28, 36, 0.98);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 2px;
+  font-size: 12px;
+}
+
+popover modelbutton,
+popover .modelbutton {
+  color: white;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: transparent;
+  min-height: 0;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &:disabled {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+popover separator {
+  background: rgba(255, 255, 255, 0.08);
+  margin: 2px 0;
+}
+
+/* === Calendar popover (date pill) === */
+
+.calendar-popup-content {
+  background: rgba(28, 28, 36, 0.98);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+}
+
+.calendar-popup-content calendar {
+  background: transparent;
+  color: white;
+  font-size: 12px;
+  padding: 4px;
+
+  &.button {
+    background: transparent;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  &:selected {
+    background: #3584e4;
+    color: white;
+    border-radius: 4px;
+  }
+}
+
+.calendar-popup-content calendar.header {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: bold;
+  padding: 2px 0;
+}
+
+.event-list {
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 240px;
+}
+
+.event-list-header {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 2px;
+}
+
+.event-list-body {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+}

@@ -1,15 +1,16 @@
 /*
- * ROFI color theme
+ * Rofi theme — matches the AGS bar (hans/ags/style.scss).
  *
- * Based on Something Found in the Internet
- *
- * User: Contributors
- * Copyright: *!
+ * Palette mirrors the bar's module pills:
+ *   bg              rgba(28,28,36,0.98)   like .calendar-popup-content
+ *   bg-input        rgba(20,20,30,0.85)   like .module
+ *   accent          #2393e9               shared cyan (workspace.active, borders)
+ *   fg              white
  */
 
 configuration {
-  font: "JetBrains Mono NL 10";
-  
+  font: "JetBrains Mono Medium 11";
+
   timeout {
     delay: 10;
     action: "kb-cancel";
@@ -17,53 +18,75 @@ configuration {
 }
 
 * {
-  border: 0;
-  margin: 0;
+  bg:        rgba(28, 28, 36, 0.98);
+  bg-input:  rgba(20, 20, 30, 0.85);
+  accent:    #2393e9;
+  fg:        #ffffff;
+  fg-dim:    rgba(255, 255, 255, 0.6);
+
+  background-color: transparent;
+  text-color:       @fg;
+  border:  0;
+  margin:  0;
   padding: 0;
   spacing: 0;
-
-  bg: #151515;
-  bg-alt: #232323;
-  fg: #2393e9;
-  fg-alt: #FFFFFF;
-
-  background-color: @bg;
-  text-color: @fg-alt;
 }
 
 window {
-  transparency: "real";
+  transparency:     "real";
+  background-color: @bg;
+  border:           1px;
+  border-color:     @accent;
+  border-radius:    10px;
+  width:            520px;
+  padding:          10px;
 }
 
 mainbox {
   children: [inputbar, listview];
+  spacing:  8px;
 }
 
 inputbar {
-  children: [prompt, entry];
-}
-
-entry {
-  padding: 12px 0;
+  children:         [prompt, entry];
+  background-color: @bg-input;
+  border:           1px;
+  border-color:     @accent;
+  border-radius:    6px;
+  padding:          6px 10px;
+  spacing:          8px;
 }
 
 prompt {
-  padding: 12px;
+  text-color: @accent;
+}
+
+entry {
+  text-color:        @fg;
+  placeholder:       "Search…";
+  placeholder-color: @fg-dim;
 }
 
 listview {
-  lines: 8;
+  lines:        8;
+  fixed-height: false;
+  spacing:      2px;
 }
 
 element {
-  children: [element-text];
+  children:      [element-text];
+  padding:       6px 10px;
+  border-radius: 4px;
+  spacing:       8px;
+}
+
+element selected {
+  background-color: @accent;
+  text-color:       @fg;
 }
 
 element-text {
-  padding: 12px;
-  text-color: @fg-alt;
-}
-
-element-text selected {
-  text-color: @fg;
+  text-color:       inherit;
+  background-color: transparent;
+  vertical-align:   0.5;
 }
