@@ -3,7 +3,7 @@
 window.Bar {
   background: transparent;
   color: white;
-  font-family: "JetBrains Mono", "Font Awesome 7 Free", monospace;
+  font-family: "JetBrains Mono NL", "Font Awesome 7 Free", monospace;
   font-size: 13px;
   font-weight: 500;
 }
@@ -50,7 +50,7 @@ menubutton.module > button {
 button.workspace {
   padding: 0 6px;
   /* Min-width sized so both single- and double-digit numbers
-     end up at the same pill width (JetBrains Mono 13px monospace).
+     end up at the same pill width (JetBrains Mono NL 13px monospace).
      Double-digit content (~16px) + 12px padding + 2px border ≈ 30px,
      so a 30px floor forces single-digit pills to match. */
   min-width: 30px;
@@ -136,7 +136,7 @@ popover separator {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   padding: 12px;
-  font-family: "JetBrains Mono", monospace;
+  font-family: "JetBrains Mono NL", monospace;
   font-size: 12px;
 }
 
@@ -187,4 +187,35 @@ popover separator {
 .event-list-body {
   color: rgba(255, 255, 255, 0.9);
   font-size: 11px;
+}
+
+/* === Media popover (now-playing pill) === */
+
+.media-popup-content {
+  background: rgba(28, 28, 36, 0.98);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: "JetBrains Mono NL", monospace;
+  font-size: 12px;
+  min-width: 260px;
+}
+
+.media-popup-content .title  { font-weight: bold; font-size: 12px; }
+.media-popup-content .artist { color: rgba(255, 255, 255, 0.75); }
+.media-popup-content .album  { color: rgba(255, 255, 255, 0.5); font-size: 11px; }
+
+/* Pill sizes to its content — labels are capped at maxWidthChars=20, so the
+   marquee scrolls within ~20-char width when the title is longer. */
+
+.media-popup-content .controls button {
+  background: transparent;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: white;
+
+  &:hover    { background: rgba(255, 255, 255, 0.08); }
+  &:disabled { color: rgba(255, 255, 255, 0.3); }
 }

@@ -9,7 +9,7 @@
  */
 
 configuration {
-  font: "JetBrains Mono Medium 11";
+  font: "JetBrains Mono NL Medium 11";
 
   timeout {
     delay: 10;

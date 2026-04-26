@@ -2,6 +2,7 @@ import app from "ags/gtk4/app"
 import { Astal, Gdk } from "ags/gtk4"
 import Workspaces from "./Workspaces"
 import WindowTitle from "./WindowTitle"
+import Media from "./Media"
 import Audio from "./Audio"
 import System from "./System"
 import Clock from "./Clock"
@@ -28,6 +29,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
           <WindowTitle />
         </box>
         <box $type="end">
+          <Media />
           <Audio />
           <System />
           <Clock />

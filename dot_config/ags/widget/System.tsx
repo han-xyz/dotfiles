@@ -1,11 +1,9 @@
 import { Gtk } from "ags/gtk4"
 import { createPoll } from "ags/time"
+import { icon } from "./_fa"
 
-const FA = "Font Awesome 7 Free Solid"
 const CPU = "\u{F2DB}"
 const MEM = "\u{F538}"
-
-const icon = (glyph: string) => `<span face="${FA}">${glyph}</span>`
 
 const cpuUsage = createPoll("0%", 2000, [
   "sh",

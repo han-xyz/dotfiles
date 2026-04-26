@@ -5,11 +5,7 @@ import { createPoll } from "ags/time"
 const events = createPoll(
   "",
   60_000,
-  [
-    "sh",
-    "-c",
-    "calcurse --from $(date +%Y-%m-%d) --to $(date -d '+60 days' +%Y-%m-%d) -Q 2>/dev/null || true",
-  ],
+  ["sh", "-c", "calcurse -d 365 2>/dev/null || true"],
 )
 
 function openCalcurseAt(year: number, month: number, day: number) {
@@ -47,7 +43,7 @@ export default function CalendarPopover() {
           class="event-list-body"
           wrap
           xalign={0}
-          label={events((raw) => raw.trim() || "(no events in the next 60 days)")}
+          label={events((raw) => raw.trim() || "(no events in the next year)")}
         />
       </box>
     </box>
