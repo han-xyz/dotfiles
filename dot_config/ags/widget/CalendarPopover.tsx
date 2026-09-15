@@ -1,12 +1,27 @@
+import { createState } from "ags"
 import { Gtk } from "ags/gtk4"
+import { monitorFile } from "ags/file"
 import { execAsync } from "ags/process"
-import { createPoll } from "ags/time"
+import GLib from "gi://GLib"
 
-const events = createPoll(
-  "",
-  60_000,
-  ["sh", "-c", "calcurse -d 365 2>/dev/null || true"],
-)
+// Upcoming events come from `calcurse -d 365`. Calcurse writes its data dir
+// only on save or quit, so watch that dir instead of polling: refresh once at
+// startup and again, debounced (one save fires several events), on any change.
+const CALCURSE_DIR = `${GLib.get_user_data_dir()}/calcurse`
+const EVENTS_CMD = ["sh", "-c", "calcurse -d 365 2>/dev/null || true"]
+
+const [events, setEvents] = createState("")
+const refresh = () => execAsync(EVENTS_CMD).then(setEvents).catch(() => {})
+let pending = 0
+monitorFile(CALCURSE_DIR, () => {
+  if (pending) GLib.source_remove(pending)
+  pending = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 300, () => {
+    pending = 0
+    refresh()
+    return GLib.SOURCE_REMOVE
+  })
+})
+refresh()
 
 function openCalcurseAt(year: number, month: number, day: number) {
   const m = String(month + 1).padStart(2, "0")

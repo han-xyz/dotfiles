@@ -49,16 +49,30 @@ menubutton.module > button {
 
 button.workspace {
   padding: 0 6px;
-  /* Min-width sized so both single- and double-digit numbers
-     end up at the same pill width (JetBrains Mono NL 13px monospace).
-     Double-digit content (~16px) + 12px padding + 2px border ≈ 30px,
-     so a 30px floor forces single-digit pills to match. */
+  /* Pill content is one or more 16px icons, or a 16px dot when empty.
+     16px content + 12px padding + 2px border ≈ 30px, so a 30px floor
+     keeps a single-icon or empty pill the same width as a multi-icon
+     one and the row doesn't jitter as pills gain or lose icons. */
   min-width: 30px;
 
   &.active {
     background: #2393e9;
     box-shadow: 0 2px 8px rgba(35, 147, 233, 0.45);
   }
+}
+
+button.workspace image.client {
+  margin: 0 1px;
+}
+
+button.workspace image.client.focused {
+  /* inset box-shadow, not border-bottom: a border adds to the box model and
+     shifts the icon up by its width; a shadow paints without resizing anything. */
+  box-shadow: inset 0 -2px 0 0 white;
+}
+
+.workspace .empty {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* === Window title === */
