@@ -1,11 +1,7 @@
 -- Keybinds, one sub-module per concern. ctx carries the values they share.
-local ctx = { mainMod = "SUPER", terminal = "kitty", menu = "rofi -show drun" }
-
--- Run `cmd` inside the terminal. `--` is kitty's end-of-options marker;
--- a terminal that takes `-e` (alacritty, foot) changes this one line.
-function ctx.in_terminal(cmd)
-	return ctx.terminal .. " -- " .. cmd
-end
+local terminal = require("lua.terminal")
+local ctx = { mainMod = "SUPER", terminal = terminal.cmd, menu = "rofi -show drun" }
+ctx.in_terminal = terminal.run
 
 require("lua.binds.apps")(ctx)
 require("lua.binds.media")(ctx)

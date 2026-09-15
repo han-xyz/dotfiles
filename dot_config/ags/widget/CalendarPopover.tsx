@@ -26,15 +26,12 @@ refresh()
 function openCalcurseAt(year: number, month: number, day: number) {
   const m = String(month + 1).padStart(2, "0")
   const d = String(day).padStart(2, "0")
-  execAsync([
-    "kitty",
-    "--title",
-    "calcurse",
-    "-e",
-    "sh",
-    "-c",
-    `calcurse --startday ${year}-${m}-${d} || calcurse`,
-  ]).catch(() => {})
+  // The terminal is chosen once in the Hyprland config (hypr/lua/terminal.lua).
+  // The bar is a separate process, so it asks Hyprland to run the command
+  // through that module instead of naming a terminal here.
+  const shell = `calcurse --startday ${year}-${m}-${d} || calcurse`
+  const lua = `hl.dsp.exec_cmd(require("lua.terminal").run(${JSON.stringify(`sh -c '${shell}'`)}))`
+  execAsync(["hyprctl", "dispatch", lua]).catch(() => {})
 }
 
 export default function CalendarPopover() {
