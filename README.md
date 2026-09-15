@@ -8,6 +8,7 @@ han's Arch desktop, managed with chezmoi.
 - `~/.config/ags` — the GTK4 status bar (AGS 3 / gnim).
 - `~/.config/alacritty`, `~/.config/rofi` — terminal and launcher configs.
 - `~/.config/waybar` — kept, not used by the Hyprland config (the bar is AGS).
+- `~/.config/mako` — notifications, styled like the bar's popovers; mako starts on demand through D-Bus activation, no autostart line needed. `Super+Shift+N` dismisses all.
 - `~/.config/pipewire`, `~/.config/wireplumber` — audio.
 - `~/.config/yay` — yay v13 Lua hooks (`init.lua`).
 
@@ -16,7 +17,7 @@ han's Arch desktop, managed with chezmoi.
 Arch package lists below come from what the configs actually call: Hyprland binds, autostart, the bar, and the plugin build.
 
 ```
-sudo pacman -S --needed hyprland hyprpaper xdg-desktop-portal-hyprland xdg-desktop-portal-gtk swaync libnotify kitty alacritty rofi cliphist wl-clipboard grim slurp satty pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol playerctl udiskie polkit-kde-agent firefox calcurse btop gjs gtk4-layer-shell dart-sass ttf-jetbrains-mono otf-font-awesome chezmoi git make gcc pkgconf
+sudo pacman -S --needed hyprland hyprpaper xdg-desktop-portal-hyprland xdg-desktop-portal-gtk mako libnotify kitty alacritty rofi cliphist wl-clipboard grim slurp satty pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol playerctl udiskie polkit-kde-agent firefox calcurse btop gjs gtk4-layer-shell dart-sass ttf-jetbrains-mono otf-font-awesome chezmoi git make gcc pkgconf
 ```
 
 Optional official: `lua` and `jq` for the config's tests and helper commands; `waybar` only if you use that config; `brightnessctl` for the brightness keys on laptops.

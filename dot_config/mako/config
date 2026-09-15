@@ -1,0 +1,33 @@
+# Notifications styled like the AGS bar's popovers (ags/style.scss):
+# same surface colour, border radius, font and accent. Reload: makoctl reload
+font=JetBrains Mono NL 12
+background-color=#1c1c24fa
+text-color=#ffffff
+border-color=#2393e9
+border-size=1
+border-radius=10
+padding=10,12
+margin=6
+outer-margin=8,8,0,0
+width=340
+height=120
+anchor=top-right
+layer=overlay
+default-timeout=10000
+max-visible=5
+icons=1
+max-icon-size=32
+icon-location=left
+progress-color=over #2393e980
+format=<b>%s</b>\n<span alpha="75%%">%b</span>
+
+[urgency=low]
+border-color=#ffffff1a
+text-color=#ffffffbf
+default-timeout=5000
+
+[urgency=critical]
+background-color=#2393e9
+border-color=#2393e9
+text-color=#ffffff
+default-timeout=0

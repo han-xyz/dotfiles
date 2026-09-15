@@ -23,6 +23,6 @@ return function(ctx)
 	hl.bind(mainMod .. " + ALT + F", hl.dsp.exec_cmd("bubblejail run -- FirefoxInstance /usr/lib/firefox/firefox --no-remote --private-window"))
 	hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
 	hl.bind(mainMod .. " + SHIFT + X", hl.dsp.exec_cmd("cliphist wipe"))
-	hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("swaync-client -t -sw"))
+	hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss -a"))
 	hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(ctx.in_terminal("calcurse")))
 end
