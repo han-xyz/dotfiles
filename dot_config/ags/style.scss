@@ -233,3 +233,74 @@ popover separator {
   &:hover    { background: rgba(255, 255, 255, 0.08); }
   &:disabled { color: rgba(255, 255, 255, 0.3); }
 }
+
+/* === Shared popover recipe (battery, brightness, and later widgets) === */
+
+.popup-content {
+  background: rgba(28, 28, 36, 0.98);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: "JetBrains Mono NL", monospace;
+  font-size: 12px;
+  min-width: 220px;
+}
+
+/* === Battery popover (power-profile switch) === */
+
+.battery-popup-content .profiles button {
+  background: transparent;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: white;
+
+  &:hover { background: rgba(255, 255, 255, 0.08); }
+}
+
+.battery-popup-content .profiles button.active {
+  background: #2393e9;
+}
+
+/* === Brightness popover === */
+
+.brightness-popup-content slider {
+  min-width: 180px;
+}
+
+/* === Bluetooth pill and popover === */
+
+.bluetooth.off {
+  opacity: 0.5;
+}
+
+.bluetooth.connected {
+  border-color: #2393e9;
+  background: rgba(35, 147, 233, 0.25);
+}
+
+.bt-popup-content .device {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+
+  &:hover { background: rgba(255, 255, 255, 0.08); }
+}
+
+/* === Claude usage pill and popover === */
+
+.claude.warn {
+  background: #2393e9;
+  color: white;
+}
+
+.claude.stale {
+  opacity: 0.5;
+}
+
+.claude-popup-content .session {
+  color: rgba(255, 255, 255, 0.75);
+}
