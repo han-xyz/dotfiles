@@ -13,7 +13,8 @@ import Clock from "./Clock"
 import Tray from "./Tray"
 import { loadHostList } from "../hosts"
 
-// A host-list name with no entry here warns instead of crashing.
+// resolveHostList already drops any name outside WIDGET_NAMES, and every
+// WIDGET_NAMES entry has an END widget, so every name here is renderable.
 const END: Record<string, () => JSX.Element> = {
   media: Media,
   audio: Audio,
@@ -26,12 +27,11 @@ const END: Record<string, () => JSX.Element> = {
   tray: Tray,
 }
 
+// Read once, not once per monitor, so host-list warnings print once.
+const hostWidgets = loadHostList()
+
 export default function Bar(gdkmonitor: Gdk.Monitor) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
-  const hostWidgets = loadHostList()
-  hostWidgets
-    .filter((name) => !(name in END))
-    .forEach((name) => console.warn(`no widget registered for "${name}"`))
 
   return (
     <window
@@ -51,7 +51,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
           <WindowTitle />
         </box>
         <box $type="end">
-          {hostWidgets.filter((name) => name in END).map((name) => END[name]())}
+          {hostWidgets.map((name) => END[name]())}
         </box>
       </centerbox>
     </window>

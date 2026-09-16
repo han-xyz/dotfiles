@@ -100,4 +100,13 @@ assert(resetText(undefined, now) === "—", `an absent window resets "—", got 
 assert(isWarn({ five: { used: 80, resetsAt: now + 3600 } }, now), "80% should warn")
 assert(!isWarn({ five: { used: 79.9, resetsAt: now + 3600 } }, now), "79.9% should not warn")
 
+const noNameNoWorkspace = parsed(
+  JSON.stringify({ received_at: now, data: { session_id: "3f2a91c4d5e67890" } }),
+  "a payload with only session_id",
+)
+assert(
+  noNameNoWorkspace.session.name === "session",
+  `no session_name and no workspace should fall back to "session", got "${noNameNoWorkspace.session.name}"`,
+)
+
 console.log("ok")

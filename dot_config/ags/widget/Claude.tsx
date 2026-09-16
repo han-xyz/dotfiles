@@ -68,7 +68,8 @@ function sessionLine(s: Session): string {
 }
 
 export default function Claude() {
-  const pillLabel = createComputed([snap, now], (s, t) => `${icon(ROBOT)} ${pillText(s?.windows, t)}`)
+  const pillLabel = icon(ROBOT)
+  const summaryLine = createComputed([snap, now], (s, t) => pillText(s?.windows, t))
   const warn = createComputed([snap, now], (s, t) => isWarn(s?.windows, t))
   const stale = createComputed([snap, now], (s, t) => s === null || isStale(s.receivedAt, t))
   const fiveLine = createComputed([snap, now], (s, t) => windowLine("5h", s?.windows.five, t))
@@ -98,6 +99,7 @@ export default function Claude() {
       <label useMarkup label={pillLabel} />
       <popover>
         <box class="popup-content claude-popup-content" orientation={Gtk.Orientation.VERTICAL} spacing={4}>
+          <label class="summary" xalign={0} label={summaryLine} />
           <label xalign={0} label={fiveLine} />
           <label xalign={0} label={weekLine} />
           <Gtk.Separator />

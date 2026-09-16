@@ -1,9 +1,15 @@
-import { createBinding, createComputed, createState, For } from "gnim"
+import { createBinding, createComputed, createState, For } from "ags"
 import { Gtk } from "ags/gtk4"
+import Gio from "gi://Gio"
 import AstalBluetooth from "gi://AstalBluetooth"
 import { brand } from "./_fa"
 
 const BLUETOOTH = "\u{F294}"
+
+// Vala async methods: GJS only returns a Promise from these once promisified,
+// otherwise the zero-argument call throws "At least 1 argument required".
+Gio._promisify(AstalBluetooth.Device.prototype, "connect_device", "connect_device_finish")
+Gio._promisify(AstalBluetooth.Device.prototype, "disconnect_device", "disconnect_device_finish")
 
 export function deviceLine(alias: string, connected: boolean, battery: number): string {
   const status = connected ? "Connected" : "Disconnected"
@@ -96,7 +102,7 @@ export default function Bluetooth() {
               const battery = createBinding(d, "battery_percentage")
               const label = createComputed(
                 [connected, connecting, battery],
-                (c, cx, b) => deviceLine(d.alias, c, b) + (cx ? "…" : ""),
+                (c, cx, b) => deviceLine(d.alias, c, b < 0 ? -1 : Math.round(b * 100)) + (cx ? "…" : ""),
               )
               return (
                 <button

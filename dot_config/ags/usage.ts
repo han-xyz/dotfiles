@@ -31,14 +31,15 @@ function parseWindow(value: unknown): Window | undefined {
   return { used, resetsAt }
 }
 
-function sessionName(data: Fields, id: string): string {
+function sessionName(data: Fields): string {
   if (typeof data.session_name === "string" && data.session_name !== "") return data.session_name
   const dir = fields(data.workspace)?.current_dir
   if (typeof dir === "string") {
     const segment = dir.split("/").filter(Boolean).pop()
     if (segment) return segment
   }
-  return id.slice(0, 8)
+  // Never fall back to session_id: it must not reach the bar (security pass).
+  return "session"
 }
 
 export function parseSnapshot(raw: string): Snapshot | null {
@@ -70,7 +71,7 @@ export function parseSnapshot(raw: string): Snapshot | null {
     receivedAt,
     session: {
       id,
-      name: sessionName(data, id),
+      name: sessionName(data),
       model: typeof model === "string" ? model : "?",
       ctx: number(fields(data.context_window)?.used_percentage),
       cost: number(fields(data.cost)?.total_cost_usd) ?? 0,
