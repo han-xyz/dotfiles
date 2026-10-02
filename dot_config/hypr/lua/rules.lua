@@ -8,3 +8,19 @@ hl.window_rule({
 	match = { class = "^(steam_app_.*|Minecraft.*)$" },
 	workspace = "10",
 })
+
+-- kitty 0.49 maximizes itself on map; on the scrolling layout that turns its
+-- column full width. suppress_event keeps the configured column width.
+hl.window_rule({
+	name  = "kitty-no-maximize",
+	match = { class = "^kitty$" },
+	suppress_event = "maximize",
+})
+
+-- satty (screenshot annotator) opens floating, centered.
+hl.window_rule({
+	name   = "satty-float",
+	match  = { class = "^com\\.gabm\\.satty$" },
+	float  = true,
+	center = true,
+})
