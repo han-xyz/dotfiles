@@ -1,7 +1,8 @@
-import { createBinding, createComputed, createState, For, With } from "ags"
+import { createBinding, createComputed, createMemo, createState, For, With } from "ags"
 import { Gdk, Gtk } from "ags/gtk4"
 import AstalHyprland from "gi://AstalHyprland"
 import { iconFor } from "./appIcon"
+import { pillState } from "../workspaces"
 
 const hypr = AstalHyprland.get_default()
 
@@ -29,6 +30,15 @@ export default function Workspaces({ monitor }: { monitor: Gdk.Monitor }) {
   const workspaces = createBinding(hypr, "workspaces")
   const focused = createBinding(hypr, "focusedWorkspace")
   const focusedClient = createBinding(hypr, "focusedClient")
+  const monitors = createBinding(hypr, "monitors")
+
+  // On hot-plug the Gdk monitor can exist before AstalHyprland lists the
+  // output, so the Hyprland monitor is looked up reactively, not once.
+  const hyprMonitor = createMemo(() => monitors().find((m) => m.name === monitor.connector) ?? null)
+  const shownId = createComputed(() => {
+    const m = hyprMonitor()
+    return m ? (createBinding(m, "activeWorkspace")()?.id ?? null) : null
+  })
 
   const myWorkspaces = workspaces((all) =>
     all
@@ -44,10 +54,17 @@ export default function Workspaces({ monitor }: { monitor: Gdk.Monitor }) {
             cs.filter((c) => c.mapped).sort((a, b) => a.x - b.x || a.y - b.y),
           )
           const isEmpty = clients.as((cs) => cs.length === 0)
+          const state = createComputed(() => pillState(ws.id, focused()?.id ?? null, shownId()))
+          const pillTooltip = clients((cs) =>
+            cs.length === 0
+              ? `Workspace ${ws.id}: empty. Click: switch`
+              : `Workspace ${ws.id}: ${cs.map((c) => c.class || c.initialClass).join(", ")}. Click: switch`,
+          )
 
           return (
             <button
-              class={focused((f) => `workspace ${f?.id === ws.id ? "active" : ""}`)}
+              class={state((st) => (st === "other" ? "workspace" : `workspace ws-${st}`))}
+              tooltipText={pillTooltip}
               onClicked={() => ws.focus()}
             >
               <With value={isEmpty}>
@@ -55,7 +72,7 @@ export default function Workspaces({ monitor }: { monitor: Gdk.Monitor }) {
                   empty ? (
                     <label class="empty" label="•" />
                   ) : (
-                    <box class="clients" spacing={2} halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER}>
+                    <box class="clients" spacing={0} halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER}>
                       <For each={clients}>
                         {(c) => (
                           <image
@@ -64,6 +81,7 @@ export default function Workspaces({ monitor }: { monitor: Gdk.Monitor }) {
                             )}
                             iconName={createBinding(c, "class")((cls) => iconFor(cls || c.initialClass))}
                             pixelSize={16}
+                            tooltipText={createBinding(c, "title")((t) => `${t || c.class || c.initialClass}. Click: focus`)}
                             valign={Gtk.Align.CENTER}
                             $={(self) => {
                               // Capture phase + claim: the icon's click is

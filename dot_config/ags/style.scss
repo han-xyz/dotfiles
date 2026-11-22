@@ -1,30 +1,52 @@
+/* === Tokens === */
+
+$accent: #2393e9;
+$on-accent: #0b1020;
+$warn: #f0b03c;
+$surface: rgba(20, 20, 30, 0.85);
+$surface-raised: rgba(28, 28, 36, 0.98);
+$fg: #ffffff;
+$fg-muted: rgba(255, 255, 255, 0.6);
+$border: rgba(255, 255, 255, 0.12);
+$pill-border: rgba(35, 147, 233, 0.45);
+$hover: rgba(255, 255, 255, 0.08);
+$divider: rgba(255, 255, 255, 0.08);
+$font: "JetBrains Mono NL", "Font Awesome 7 Free", monospace;
+$font-size-bar: 13px;
+$font-size-body: 12px;
+$font-size-small: 11px;
+$radius: 6px;
+$radius-inner: 4px;
+$radius-popup: 10px;
+
 /* === Bar foundation === */
 
 window.Bar {
   background: transparent;
-  color: white;
-  font-family: "JetBrains Mono NL", "Font Awesome 7 Free", monospace;
-  font-size: 13px;
-  font-weight: 500;
+  color: $fg;
+  font: 500 $font-size-bar $font;
 }
 
 /* === Module pills (shared base for all right-side widgets + workspaces) === */
 
 .module,
-button.workspace {
-  background: rgba(20, 20, 30, 0.85);
-  color: white;
-  border: 1px solid #2393e9;
-  border-radius: 6px;
-  padding: 0 6px;
-  margin: 4px 3px;
+button.workspace,
+.window-title {
+  background: $surface;
+  color: $fg;
+  border: 1px solid $pill-border;
+  border-radius: $radius;
+  padding: 0 8px;
+  margin: 4px 2px;
   min-height: 22px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  box-shadow: none;
   transition: background 150ms ease;
+}
 
-  &:hover {
-    background: rgba(35, 35, 50, 0.9);
-  }
+button.module:hover,
+menubutton.module:hover,
+button.workspace:hover {
+  background-image: linear-gradient($hover, $hover);
 }
 
 .module > label,
@@ -45,41 +67,63 @@ menubutton.module > button {
   color: inherit;
 }
 
+.module .sep {
+  color: $fg-muted;
+  margin: 0 6px;
+}
+
+button.part {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  min-height: 0;
+  min-width: 0;
+  color: inherit;
+}
+
+.system .part.stale {
+  color: $fg-muted;
+}
+
 /* === Workspaces === */
 
 button.workspace {
-  padding: 0 6px;
-  /* Pill content is one or more 16px icons, or a 16px dot when empty.
-     16px content + 12px padding + 2px border ≈ 30px, so a 30px floor
-     keeps a single-icon or empty pill the same width as a multi-icon
-     one and the row doesn't jitter as pills gain or lose icons. */
-  min-width: 30px;
+  /* GTK4 min-width sizes the content box. Content is one or more 24px icon
+     targets, or the dot when empty; a 24px floor keeps an empty pill as wide
+     as a one-icon pill. */
+  min-width: 24px;
 
-  &.active {
-    background: #2393e9;
-    box-shadow: 0 2px 8px rgba(35, 147, 233, 0.45);
+  &.ws-shown {
+    background: $surface-raised;
+    border-color: $accent;
+  }
+
+  &.ws-focused {
+    background: $accent;
+    border-color: $accent;
+    color: $on-accent;
   }
 }
 
 button.workspace image.client {
-  margin: 0 1px;
+  /* 16px icon + padding = a 24x22 click target, the full height inside the
+     pill's border; box spacing 0 keeps the pitch at 24px. */
+  padding: 3px 4px;
 }
 
 button.workspace image.client.focused {
   /* inset box-shadow, not border-bottom: a border adds to the box model and
      shifts the icon up by its width; a shadow paints without resizing anything. */
-  box-shadow: inset 0 -2px 0 0 white;
+  box-shadow: inset 0 -2px 0 0 $fg;
 }
 
 .workspace .empty {
-  color: rgba(255, 255, 255, 0.4);
+  color: $fg-muted;
 }
 
-/* === Window title === */
-
-.window-title {
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0 12px;
+.workspace.ws-focused .empty {
+  color: $fg;
 }
 
 /* === Tray === */
@@ -96,155 +140,139 @@ button.workspace image.client.focused {
   min-height: 0;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: $hover;
   }
 }
 
 .tray image {
   -gtk-icon-size: 16px;
   margin: 0;
-  color: white;
+  color: $fg;
 }
 
-/* === Popovers (tray dbusmenu, etc.) === */
+/* === Popovers === */
 
-popover,
-popover > contents,
-popover.menu,
+/* The content box inside each popover is the only frame; the popover's own
+   contents node stays bare so there is one border and one radius. */
+popover > contents {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Tray dbusmenus have no content box of ours, so their contents node is the frame. */
+popover.menu > contents,
+.popup-content,
+.calendar-popup-content,
+.media-popup-content {
+  background: $surface-raised;
+  color: $fg;
+  border: 1px solid $border;
+  border-radius: $radius-popup;
+  padding: 12px;
+  font: 500 $font-size-body $font;
+}
+
 popover.menu > contents {
-  background-color: rgba(28, 28, 36, 0.98);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 2px;
-  font-size: 12px;
+  padding: 4px;
 }
 
 popover modelbutton,
 popover .modelbutton {
-  color: white;
-  padding: 3px 8px;
-  border-radius: 3px;
+  color: $fg;
+  padding: 4px 8px;
+  border-radius: $radius-inner;
   background: transparent;
   min-height: 0;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: $hover;
   }
 
   &:disabled {
-    color: rgba(255, 255, 255, 0.4);
+    color: $fg-muted;
   }
 }
 
 popover separator {
-  background: rgba(255, 255, 255, 0.08);
-  margin: 2px 0;
+  background: $divider;
+  margin: 4px 0;
+}
+
+.popup-content {
+  min-width: 220px;
 }
 
 /* === Calendar popover (date pill) === */
 
-.calendar-popup-content {
-  background: rgba(28, 28, 36, 0.98);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 12px;
-  font-family: "JetBrains Mono NL", monospace;
-  font-size: 12px;
-}
-
 .calendar-popup-content calendar {
   background: transparent;
-  color: white;
-  font-size: 12px;
+  color: $fg;
+  font-size: $font-size-body;
   padding: 4px;
 
-  &.button {
+  > header > button {
     background: transparent;
-    color: white;
-    border-radius: 4px;
+    color: $fg;
+    border-radius: $radius-inner;
     padding: 4px;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: $hover;
     }
   }
 
-  &:selected {
-    background: #3584e4;
-    color: white;
-    border-radius: 4px;
+  > grid > label:selected {
+    background: $accent;
+    color: $on-accent;
+    border-radius: $radius-inner;
   }
 }
 
-.calendar-popup-content calendar.header {
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: bold;
-  padding: 2px 0;
+.calendar-popup-content calendar > header {
+  color: $fg;
+  font-weight: 700;
+  padding: 4px 0;
 }
 
 .event-list {
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 8px;
+  border-top: 1px solid $divider;
   min-width: 240px;
 }
 
 .event-list-header {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding-bottom: 2px;
+  color: $fg-muted;
+  font-size: $font-size-small;
+  font-weight: 700;
+  padding-bottom: 4px;
 }
 
 .event-list-body {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 11px;
+  color: $fg;
+  font-size: $font-size-small;
 }
 
 /* === Media popover (now-playing pill) === */
 
 .media-popup-content {
-  background: rgba(28, 28, 36, 0.98);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 12px;
-  font-family: "JetBrains Mono NL", monospace;
-  font-size: 12px;
   min-width: 260px;
 }
 
-.media-popup-content .title  { font-weight: bold; font-size: 12px; }
-.media-popup-content .artist { color: rgba(255, 255, 255, 0.75); }
-.media-popup-content .album  { color: rgba(255, 255, 255, 0.5); font-size: 11px; }
-
-/* Pill sizes to its content — labels are capped at maxWidthChars=20, so the
-   marquee scrolls within ~20-char width when the title is longer. */
+.media-popup-content .title  { font-weight: 700; font-size: $font-size-body; }
+.media-popup-content .artist { color: $fg-muted; }
+.media-popup-content .album  { color: $fg-muted; font-size: $font-size-small; }
 
 .media-popup-content .controls button {
   background: transparent;
   border: none;
-  padding: 4px 10px;
-  border-radius: 4px;
-  color: white;
+  padding: 4px 8px;
+  border-radius: $radius-inner;
+  color: $fg;
 
-  &:hover    { background: rgba(255, 255, 255, 0.08); }
-  &:disabled { color: rgba(255, 255, 255, 0.3); }
-}
-
-/* === Shared popover recipe (battery, brightness, and later widgets) === */
-
-.popup-content {
-  background: rgba(28, 28, 36, 0.98);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 12px;
-  font-family: "JetBrains Mono NL", monospace;
-  font-size: 12px;
-  min-width: 220px;
+  &:hover    { background: $hover; }
+  &:disabled { color: $fg-muted; }
 }
 
 /* === Battery popover (power-profile switch) === */
@@ -252,20 +280,21 @@ popover separator {
 .battery-popup-content .profiles button {
   background: transparent;
   border: none;
-  padding: 4px 10px;
-  border-radius: 4px;
-  color: white;
+  padding: 4px 8px;
+  border-radius: $radius-inner;
+  color: $fg;
 
-  &:hover { background: rgba(255, 255, 255, 0.08); }
+  &:hover { background: $hover; }
 }
 
 .battery-popup-content .profiles button.active {
-  background: #2393e9;
+  background: $accent;
+  color: $on-accent;
 }
 
 /* === Brightness popover === */
 
-.brightness-popup-content slider {
+.brightness-popup-content scale {
   min-width: 180px;
 }
 
@@ -276,35 +305,74 @@ popover separator {
 }
 
 .bluetooth.connected {
-  border-color: #2393e9;
-  background: rgba(35, 147, 233, 0.25);
+  border-color: $accent;
 }
 
 .bt-popup-content .device {
   background: transparent;
   border: none;
   padding: 4px 8px;
-  border-radius: 4px;
-  color: white;
+  border-radius: $radius-inner;
+  color: $fg;
 
-  &:hover { background: rgba(255, 255, 255, 0.08); }
+  &:hover { background: $hover; }
 }
 
 /* === Claude usage pill and popover === */
 
 .claude.warn {
-  background: #2393e9;
-  color: white;
+  color: $warn;
+  border-color: $warn;
 }
 
-.claude.stale {
-  opacity: 0.5;
+/* Only the text dims: an opaque fill keeps a light wallpaper out from behind it. */
+.claude.stale:not(.warn) {
+  color: $fg-muted;
 }
 
-.claude-popup-content .session {
-  color: rgba(255, 255, 255, 0.75);
+.claude-popup-content .muted {
+  color: $fg-muted;
 }
 
-.claude-popup-content .summary {
-  font-weight: bold;
+.claude-popup-content .note {
+  font: 500 $font-size-small $font;
+}
+
+.claude-popup-content .percent {
+  font-weight: 700;
+}
+
+.claude-popup-content .percent.warn {
+  color: $warn;
+}
+
+/* The level bar's offset classes (low, high, full) are cleared in Claude.tsx, so only filled and empty blocks exist. */
+.claude-popup-content levelbar {
+  min-width: 96px;
+
+  trough {
+    background: $divider;
+    border: none;
+    border-radius: $radius-inner;
+    padding: 0;
+    min-height: 4px;
+  }
+
+  block {
+    min-height: 4px;
+    border: none;
+    border-radius: $radius-inner;
+  }
+
+  block.filled {
+    background: $accent;
+  }
+
+  block.empty {
+    background: transparent;
+  }
+
+  &.warn block.filled {
+    background: $warn;
+  }
 }

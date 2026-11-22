@@ -13,6 +13,7 @@ export default function WindowTitle() {
       maxWidthChars={60}
       ellipsize={Pango.EllipsizeMode.END}
       label={title}
+      visible={title((t) => t !== "")}
     />
   )
 }

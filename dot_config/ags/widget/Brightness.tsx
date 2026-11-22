@@ -5,13 +5,14 @@ import { icon } from "./_fa"
 
 const SUN = "\u{F185}"
 const STEP = 0.05
+const GLYPH_GAP = 4
 
 export default function Brightness() {
   const b = AstalBrightness.get_default()
   if (b.backlights.get_devices().length === 0) return <box visible={false} />
 
   const brightness = createBinding(b.screen, "brightness")
-  const pillLabel = brightness((v) => `${icon(SUN)} ${Math.round(v * 100)}%`)
+  const pillLabel = brightness((v) => `${Math.round(v * 100)}%`)
 
   return (
     <menubutton
@@ -26,7 +27,10 @@ export default function Brightness() {
         self.add_controller(ctrl)
       }}
     >
-      <label useMarkup label={pillLabel} />
+      <box spacing={GLYPH_GAP}>
+        <label useMarkup label={icon(SUN)} />
+        <label label={pillLabel} />
+      </box>
       <popover>
         <box class="popup-content brightness-popup-content">
           <slider

@@ -43,7 +43,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
       anchor={TOP | LEFT | RIGHT}
       application={app}
     >
-      <centerbox>
+      <centerbox shrinkCenterLast={false}>
         <box $type="start">
           <Workspaces monitor={gdkmonitor} />
         </box>

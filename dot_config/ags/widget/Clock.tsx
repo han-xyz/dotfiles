@@ -2,20 +2,14 @@ import { createPoll } from "ags/time"
 import CalendarPopover from "./CalendarPopover"
 
 export default function Clock() {
-  const date = createPoll("", 60_000, ["date", "+%d/%m/%Y"])
-  const time = createPoll("", 1000, ["date", "+%H:%M:%S"])
+  const now = createPoll("", 1000, ["date", "+%d/%m/%Y %H:%M:%S"])
 
   return (
-    <box>
-      <menubutton class="module clock-date">
-        <label label={date} />
-        <popover>
-          <CalendarPopover />
-        </popover>
-      </menubutton>
-      <box class="module clock-time">
-        <label label={time} />
-      </box>
-    </box>
+    <menubutton class="module clock" tooltipText="Click for calendar">
+      <label label={now} />
+      <popover>
+        <CalendarPopover />
+      </popover>
+    </menubutton>
   )
 }

@@ -5,6 +5,7 @@ import AstalBluetooth from "gi://AstalBluetooth"
 import { brand } from "./_fa"
 
 const BLUETOOTH = "\u{F294}"
+const GLYPH_GAP = 4
 
 // Vala async methods: GJS only returns a Promise from these once promisified,
 // otherwise the zero-argument call throws "At least 1 argument required".
@@ -62,8 +63,6 @@ export default function Bluetooth() {
   const isPowered = createBinding(bt, "is_powered")
   const isConnected = createBinding(bt, "is_connected")
 
-  const pillLabel = count((n) => (n > 0 ? `${brand(BLUETOOTH)} ${n}` : brand(BLUETOOTH)))
-
   return (
     <menubutton
       class="module bluetooth"
@@ -82,7 +81,10 @@ export default function Bluetooth() {
         isConnected.subscribe(applyConnected)
       }}
     >
-      <label useMarkup label={pillLabel} />
+      <box spacing={GLYPH_GAP}>
+        <label useMarkup label={brand(BLUETOOTH)} />
+        <label label={count((n) => `${n}`)} visible={count((n) => n > 0)} />
+      </box>
       <popover>
         <box class="popup-content bt-popup-content" orientation={Gtk.Orientation.VERTICAL} spacing={6}>
           <box spacing={8}>

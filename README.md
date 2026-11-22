@@ -20,7 +20,7 @@ Arch package lists below come from what the configs actually call: Hyprland bind
 sudo pacman -S --needed hyprland hyprpaper xdg-desktop-portal-hyprland xdg-desktop-portal-gtk mako libnotify kitty alacritty rofi cliphist wl-clipboard grim slurp satty pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol playerctl udiskie polkit-kde-agent firefox calcurse btop gjs gtk4-layer-shell dart-sass ttf-jetbrains-mono otf-font-awesome chezmoi git make gcc pkgconf
 ```
 
-Optional official: `lua` and `jq` for the config's tests and helper commands; `waybar` only if you use that config; `brightnessctl` for the brightness keys on laptops.
+Optional official: `lua` for the config's tests; `jq` for helper commands and for the Claude statusLine hook, which uses it to copy the model-scoped weekly limit into the bar's usage snapshot (without `jq` the Claude popover shows only the all-models limit); `nvidia-utils` on a machine with an NVIDIA card, whose `nvidia-smi` feeds the GPU part of the system pill (without it the bar reads an integrated GPU's `gpu_busy_percent`, or shows no GPU part); `waybar` only if you use that config; `brightnessctl` for the brightness keys on laptops.
 
 ```
 sudo pacman -S --needed lua jq waybar brightnessctl
@@ -41,10 +41,10 @@ git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
 AUR (`aylurs-gtk-shell-git` pulls libastal, libastal-4 and libastal-io; `bubblejail` is the Firefox sandbox behind Super+F):
 
 ```
-yay -S --needed aylurs-gtk-shell-git libastal-apps-git libastal-hyprland-git libastal-tray-git libastal-battery-git libastal-brightness-git libastal-bluetooth-git libastal-powerprofiles-git bubblejail
+yay -S --needed aylurs-gtk-shell-git libastal-apps-git libastal-hyprland-git libastal-tray-git libastal-battery-git libastal-brightness-git libastal-bluetooth-git libastal-powerprofiles-git libastal-wireplumber-git bubblejail
 ```
 
-The four laptop libastal packages are needed on every machine: the bar imports them at startup even where the host list leaves those pills out.
+The four laptop libastal packages are needed on every machine: the bar imports them at startup even where the host list leaves those pills out. `libastal-wireplumber-git` feeds the audio pill (volume and mic through WirePlumber signals, no polling).
 
 Optional AUR (`polychromatic-git`, the Razer tray applet in autostart):
 
@@ -55,7 +55,7 @@ yay -S --needed polychromatic-git
 ## Fresh machine
 
 1. `sudo pacman -S --needed chezmoi git`
-2. `chezmoi init --apply https://codeberg.org/hanxyz/dotfiles.git`
+2. `chezmoi init --apply git@github.com:han-xyz/dotfiles.git`
 3. `make -B -C ~/.config/hypr/plugins/lockguard lockguard.so` — forced, because the applied binary is newer than Hyprland's headers, so a plain make would keep the stale build; the plugin embeds the compositor hash and refuses to load when it does not match.
 4. `ags types -u -d ~/.config/ags` — recreates the ignored `node_modules` links to `/usr/share/ags/js` (and the `@girs` types); the bar does not start without them. Run it again after installing any new `libastal-*` package, or its types stay missing.
 5. Pick the bar's pills: no file under `~/.config/ags/hosts/` means the laptop set. For another desktop, `cp ~/.config/ags/hosts/han-pc.json ~/.config/ags/hosts/$(hostname).json` and edit the list.

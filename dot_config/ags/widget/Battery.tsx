@@ -12,6 +12,7 @@ const BATTERY_EMPTY = "\u{F244}"
 const BOLT = "\u{F0E7}"
 const SCALE = "\u{F24E}"
 const LEAF = "\u{F06C}"
+const GLYPH_GAP = 4
 
 const PROFILES = [
   { profile: "performance", glyph: BOLT },
@@ -56,10 +57,10 @@ export default function Battery() {
   const energyRate = createBinding(dev, "energy_rate")
   const activeProfile = createBinding(pp, "active_profile")
 
-  const pillLabel = createComputed(
-    [percentage, charging],
-    (pct, isCharging) => `${icon(batteryGlyph(Math.round(pct * 100), isCharging))} ${Math.round(pct * 100)}%`,
+  const pillGlyph = createComputed([percentage, charging], (pct, isCharging) =>
+    icon(batteryGlyph(Math.round(pct * 100), isCharging)),
   )
+  const pillText = percentage((pct) => `${Math.round(pct * 100)}%`)
 
   const stateLabel = createComputed([charging, state], (isCharging, s) =>
     isCharging ? "Charging" : s === AstalBattery.State.FULLY_CHARGED ? "Full" : "Discharging",
@@ -78,7 +79,10 @@ export default function Battery() {
 
   return (
     <menubutton class="module battery" visible={createBinding(dev, "is_present")}>
-      <label useMarkup label={pillLabel} />
+      <box spacing={GLYPH_GAP}>
+        <label useMarkup label={pillGlyph} />
+        <label label={pillText} />
+      </box>
       <popover>
         <box class="popup-content battery-popup-content" orientation={Gtk.Orientation.VERTICAL} spacing={6}>
           <label xalign={0} label={stateLabel} />

@@ -1,5 +1,6 @@
-import { createComputed, createState } from "ags"
+import { createComputed, createState, onCleanup } from "ags"
 import { Gtk } from "ags/gtk4"
+import Pango from "gi://Pango"
 import { execAsync } from "ags/process"
 import { createPoll } from "ags/time"
 import { icon } from "./_fa"
@@ -53,21 +54,16 @@ const send = (cmd: "play-pause" | "next" | "previous") => {
 }
 
 export default function Media() {
-  const barGlyph = active((a) =>
-    icon(!a ? MUSIC : a.status === "Playing" ? PAUSE : PLAY),
+  const tooltip = active((a) =>
+    a ? `${[a.title, a.artist].filter(Boolean).join(" — ") || a.name}. Click for controls` : "",
   )
-  const barText = active((a) => {
-    if (!a) return ""
-    return [a.artist, a.title].filter(Boolean).join(" — ") || "—"
-  })
+  const pillText = active((a) => (a ? a.title || a.name : ""))
   const title = active((a) => a?.title ?? "")
   const artist = active((a) => a?.artist ?? "")
   const album = active((a) => a?.album ?? "")
   const albumVisible = active((a) => !!a?.album)
   const playPauseGlyph = active((a) => icon(a?.status === "Playing" ? PAUSE : PLAY))
   const showSwitch = players((ps) => ps.length > 1)
-
-  let dupRef: Gtk.Widget | null = null
 
   return (
     <box>
@@ -81,6 +77,8 @@ export default function Media() {
       </button>
       <menubutton
         class="module media"
+        visible={active((a) => a !== null)}
+        tooltipText={tooltip}
         valign={Gtk.Align.CENTER}
         $={(self) => {
           const apply = () => {
@@ -88,52 +86,12 @@ export default function Media() {
             else self.remove_css_class("active")
           }
           apply()
-          active.subscribe(apply)
+          onCleanup(active.subscribe(apply))
         }}
       >
-        <box spacing={6} halign={Gtk.Align.CENTER}>
-          <label useMarkup label={barGlyph} />
-          <scrolledwindow
-            class="media-marquee"
-            visible={active((a) => a !== null)}
-            hscrollbarPolicy={Gtk.PolicyType.EXTERNAL}
-            vscrollbarPolicy={Gtk.PolicyType.NEVER}
-            propagateNaturalWidth
-            propagateNaturalHeight
-            maxContentWidth={140}
-            $={(self) => {
-              let last = -1
-              let pos = 0
-              const gap = 40
-              self.add_tick_callback((_w, clock) => {
-                const adj = self.get_hadjustment()
-                const upper = adj.get_upper()
-                const page = adj.get_page_size()
-                const dupShown = dupRef?.get_visible() ?? false
-                const textW = dupShown ? (upper - gap) / 2 : upper
-                const fits = textW <= page
-                if (dupRef && dupRef.get_visible() !== !fits) dupRef.set_visible(!fits)
-                const now = clock.get_frame_time()
-                if (fits) {
-                  adj.set_value(0)
-                  pos = 0
-                  last = now
-                  return true
-                }
-                if (last < 0) { last = now; return true }
-                const dt = (now - last) / 1_000_000
-                last = now
-                pos = (pos + dt * 30) % (textW + gap)
-                adj.set_value(pos)
-                return true
-              })
-            }}
-          >
-            <box spacing={40}>
-              <label useMarkup label={barText} xalign={0} />
-              <label useMarkup label={barText} xalign={0} $={(self) => { dupRef = self }} />
-            </box>
-          </scrolledwindow>
+        <box spacing={4} halign={Gtk.Align.CENTER}>
+          <label useMarkup label={icon(MUSIC)} />
+          <label label={pillText} maxWidthChars={20} ellipsize={Pango.EllipsizeMode.END} />
         </box>
         <popover>
           <box class="media-popup-content" orientation={Gtk.Orientation.VERTICAL} spacing={8}>
